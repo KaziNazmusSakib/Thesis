@@ -1,0 +1,63 @@
+//Python Code/////////////////////////////////////////
+//////////////////////Correlation/////////////////////
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.stats import pearsonr
+
+# -----------------------
+# Dataset
+# -----------------------
+data = {
+    "Month": ["July", "August", "September", "October", "November", "December"],
+    "Water_DNCC": [3.12, 3.12, 3.12, 3.10, 2.84, 2.89],
+    "Water_DSCC": [5.97, 5.97, 5.97, 5.76, 5.51, 5.48],
+    "Dengue_DNCC": [220, 350, 480, 300, 150, 40],
+    "Dengue_DSCC": [450, 720, 980, 640, 320, 90]
+}
+
+df = pd.DataFrame(data)
+print(df)
+
+# -----------------------
+# Correlation
+# -----------------------
+corr_dncc, _ = pearsonr(df["Water_DNCC"], df["Dengue_DNCC"])
+corr_dscc, _ = pearsonr(df["Water_DSCC"], df["Dengue_DSCC"])
+
+print(f"Correlation (Water vs Dengue) in DNCC: {corr_dncc:.2f}")
+print(f"Correlation (Water vs Dengue) in DSCC: {corr_dscc:.2f}")
+
+# -----------------------
+# Line plot (Trend)
+# -----------------------
+plt.figure(figsize=(10,6))
+plt.plot(df["Month"], df["Water_DNCC"], 'g--o', label="Water Density DNCC (%)")
+plt.plot(df["Month"], df["Water_DSCC"], 'b--o', label="Water Density DSCC (%)")
+plt.plot(df["Month"], df["Dengue_DNCC"], 'orange', marker='o', label="Dengue Cases DNCC")
+plt.plot(df["Month"], df["Dengue_DSCC"], 'r-o', label="Dengue Cases DSCC")
+plt.title("Water Density vs Dengue Cases (Monthly Trend)")
+plt.xlabel("Month")
+plt.ylabel("Dengue Cases")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# -----------------------
+# Scatter Plot (Correlation)
+# -----------------------
+fig, ax = plt.subplots(1,2, figsize=(12,5))
+
+# DNCC
+ax[0].scatter(df["Water_DNCC"], df["Dengue_DNCC"], color="blue")
+ax[0].set_title(f"DNCC\nCorrelation = {corr_dncc:.2f}")
+ax[0].set_xlabel("Water Density (%)")
+ax[0].set_ylabel("Dengue Cases")
+
+# DSCC
+ax[1].scatter(df["Water_DSCC"], df["Dengue_DSCC"], color="red")
+ax[1].set_title(f"DSCC\nCorrelation = {corr_dscc:.2f}")
+ax[1].set_xlabel("Water Density (%)")
+ax[1].set_ylabel("Dengue Cases")
+
+plt.tight_layout()
+plt.show()
